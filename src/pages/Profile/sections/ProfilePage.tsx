@@ -12,6 +12,8 @@ import {
   ChevronRight,
   ShieldCheck,
   BarChart3,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { useTranslation } from "../../../context/TranslationContext";
@@ -35,6 +37,8 @@ export const ProfilePage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [copiedApiKey, setCopiedApiKey] = useState(false);
   const [usagePlan, setUsagePlan] = useState("Free");
+  const [apiPassword, setApiPassword] = useState("");
+  const [showApiPassword, setShowApiPassword] = useState(false);
 
   // Redirect if not authenticated
   if (!isAuthenticated()) {
@@ -54,12 +58,40 @@ export const ProfilePage = () => {
     }
   }, [currentUser]);
 
-  const copyToClipboard = () => {
-    const apiCredentials = `${currentUser.username}:${currentUser.username}`;
+  const copyApiCredentials = () => {
+    if (!apiPassword.trim()) {
+      // Alert user that password is needed
+      setFormErrors({
+        ...formErrors,
+        apiPassword: "Please enter your API password to generate credentials",
+      });
+      return;
+    }
+
+    // Clear any previous errors
+    setFormErrors({
+      ...formErrors,
+      apiPassword: null,
+    });
+
+    // Generate the Authorization header with the actual password provided
+    const apiCredentials = `${currentUser.username}:${apiPassword}`;
     const base64Credentials = btoa(apiCredentials);
     navigator.clipboard.writeText(`Authorization: Basic ${base64Credentials}`);
+
     setCopiedApiKey(true);
     setTimeout(() => setCopiedApiKey(false), 2000);
+  };
+
+  const handleApiPasswordChange = (e) => {
+    setApiPassword(e.target.value);
+    // Clear error when user starts typing
+    if (formErrors.apiPassword) {
+      setFormErrors({
+        ...formErrors,
+        apiPassword: null,
+      });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -102,6 +134,10 @@ export const ProfilePage = () => {
     }
 
     return errors;
+  };
+
+  const toggleShowApiPassword = () => {
+    setShowApiPassword(!showApiPassword);
   };
 
   const handleSubmit = async (e) => {
@@ -546,87 +582,116 @@ export const ProfilePage = () => {
                 </div>
               )}
 
-              {/* API Key Tab */}
+              {/* API Credentials Tab */}
               {activeTab === "api" && (
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-6">
-                    {t("profile.apiCredentials")}
+                  {/* Heading */}
+                  <h2 className="text-xl font-bold text-gray-900 mb-4">
+                    {t("profile.apiKey")}
                   </h2>
 
-                  <div className="mb-8">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-base font-medium text-gray-700">
-                        {t("profile.apiKey")}
-                      </h3>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-4">
-                      {t("profile.apiKeyDescription")}
-                    </p>
+                  {/* Explanation */}
+                  <p className="mb-6 text-sm text-gray-600">
+                    {t("profile.apiKeyDescription")} (Base64{" "}
+                    <code>username:password</code>). {t("profile.apiKeyNote")}
+                  </p>
 
-                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <div className="font-mono text-sm text-gray-800 flex-grow">
-                          Authorization: Basic{" "}
-                          {currentUser
-                            ? btoa(
-                                `${currentUser.username}:${currentUser.username}`
-                              )
-                            : ""}
-                        </div>
+                  {/* Generator */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                    <h3 className="font-medium text-gray-800 mb-4">
+                      {t("profile.generateAuthHeader")}
+                    </h3>
+
+                    {/* Username (read‑only) */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {t("profile.fields.username")}
+                      </label>
+                      <input
+                        type="text"
+                        value={currentUser?.username || ""}
+                        readOnly
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-50 text-gray-700"
+                      />
+                    </div>
+
+                    {/* Password input */}
+                    <div className="mb-6">
+                      <label
+                        htmlFor="apiPassword"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        {t("profile.fields.password")}
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="apiPassword"
+                          type={showApiPassword ? "text" : "password"}
+                          value={apiPassword}
+                          onChange={handleApiPasswordChange}
+                          placeholder={t("profile.placeholderPassword")}
+                          className={`w-full px-4 py-2 pr-10 rounded-lg border ${
+                            formErrors.apiPassword
+                              ? "border-red-300 focus:border-red-500 focus:ring-red-500"
+                              : "border-gray-300 focus:border-yellow-500 focus:ring-yellow-500"
+                          } focus:outline-none focus:ring-2 focus:ring-opacity-50`}
+                        />
                         <button
-                          onClick={copyToClipboard}
-                          className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded-md flex items-center text-sm font-medium text-gray-700 transition-colors"
+                          type="button"
+                          onClick={toggleShowApiPassword}
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
                         >
-                          {copiedApiKey ? (
-                            <>
-                              <Check size={14} className="mr-1" />
-                              {t("profile.copied")}
-                            </>
+                          {showApiPassword ? (
+                            <EyeOff size={18} />
                           ) : (
-                            <>
-                              <Copy size={14} className="mr-1" />
-                              {t("profile.copy")}
-                            </>
+                            <Eye size={18} />
                           )}
                         </button>
                       </div>
+                      {formErrors.apiPassword && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {formErrors.apiPassword}
+                        </p>
+                      )}
                     </div>
-                    <p className="text-xs text-gray-500">
-                      {t("profile.apiKeyNote")}
-                    </p>
+
+                    {/* Generated header + Copy */}
+                    <div className="flex items-center justify-between">
+                      <code className="flex-1 font-mono text-sm bg-white p-2 rounded border overflow-x-auto mr-4">
+                        Authorization: Basic{" "}
+                        {apiPassword
+                          ? btoa(`${currentUser?.username}:${apiPassword}`)
+                          : t("profile.placeholderAuth")}
+                      </code>
+                      <button
+                        onClick={copyApiCredentials}
+                        disabled={!apiPassword}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                          apiPassword
+                            ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                            : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        }`}
+                      >
+                        {copiedApiKey ? t("profile.copied") : t("profile.copy")}
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      {t("profile.apiUsage")}
-                    </h3>
-
-                    {/* API Documentation Examples */}
-                    <div className="bg-gray-50 rounded-lg border border-gray-200 divide-y divide-gray-200">
-                      <div className="p-4">
-                        <h4 className="text-base font-medium text-gray-800 mb-2">
-                          {t("profile.apiExample")}
-                        </h4>
-                        <pre className="bg-gray-900 text-gray-200 p-3 rounded-lg overflow-x-auto text-sm">
-                          {`curl -X GET "https://api.whereismy.city/api/v1/search?q=New+York" \\
-  -H "Authorization: Basic ${currentUser ? btoa(`${currentUser.username}:${currentUser.username}`) : ""}"
-`}
-                        </pre>
-                      </div>
-
-                      <div className="p-4">
-                        <h4 className="text-base font-medium text-gray-800 mb-2">
-                          {t("profile.fullDocumentation")}
-                        </h4>
-                        <Link
-                          to="/docs"
-                          className="text-yellow-600 hover:text-yellow-700 font-medium flex items-center"
-                        >
-                          {t("profile.viewDocs")}
-                          <ChevronRight size={16} className="ml-1" />
-                        </Link>
-                      </div>
-                    </div>
+                  {/* Manual instructions & docs link */}
+                  <div className="text-xs text-gray-500">
+                    <p className="mb-2">
+                      <strong>{t("profile.apiManual")}</strong>{" "}
+                      {t("profile.apiManualDescription")}
+                    </p>
+                    <p>
+                      <Link
+                        to="/docs"
+                        className="text-yellow-600 hover:underline"
+                      >
+                        {t("profile.viewDocs")}
+                      </Link>{" "}
+                      {t("profile.apiManualNote")}
+                    </p>
                   </div>
                 </div>
               )}

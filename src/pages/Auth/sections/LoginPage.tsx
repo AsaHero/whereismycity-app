@@ -15,7 +15,7 @@ import {
 
 export const LoginPage = () => {
   const { t } = useTranslation();
-  const { login, loading, error } = useAuth();
+  const { login, loading, error, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [formState, setFormState] = useState({
@@ -83,6 +83,10 @@ export const LoginPage = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  if (isAuthenticated) {
+    return navigate("/profile");
+  }
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">

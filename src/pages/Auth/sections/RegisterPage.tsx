@@ -16,7 +16,7 @@ import {
 
 export const RegisterPage = () => {
   const { t } = useTranslation();
-  const { register, loading, error } = useAuth();
+  const { register, loading, error, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const [formState, setFormState] = useState({
@@ -208,6 +208,10 @@ export const RegisterPage = () => {
       setRegistrationStep(2);
     }
   };
+
+  if (isAuthenticated) {
+    return navigate("/profile");
+  }
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">
