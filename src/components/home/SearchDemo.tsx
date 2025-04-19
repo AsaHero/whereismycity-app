@@ -7,6 +7,7 @@ import L from "leaflet";
 import { useTranslation } from "../../context/TranslationContext";
 import { useSearch } from "../../context/SearchContext";
 import debounce from 'lodash/debounce';
+import { trackEvent } from "../../utils/analytics";
 
 // Fix for default marker icons in Leaflet
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -92,6 +93,7 @@ export const SearchDemo = () => {
 
       try {
         await performSearch(searchTerm, { limit: 5 });
+        trackEvent("demoSearch", { query: searchTerm });
       } catch (err) {
         console.error("Search error:", err);
       }
