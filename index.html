@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WhereIsMyCity - search cities in any language</title>
+
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
@@ -38,15 +39,8 @@
         webvisor: true,
       });
     </script>
-    <noscript
-      ><div>
-        <img
-          src="https://mc.yandex.ru/watch/101186853"
-          style="position: absolute; left: -9999px"
-          alt=""
-        /></div
-    ></noscript>
     <!-- /Yandex.Metrika counter -->
+
     <!-- Google tag (gtag.js) -->
     <script
       async
@@ -58,12 +52,22 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-N01SNTFV3Q");
     </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Yandex.Metrika noscript fallback -->
+    <noscript>
+      <div>
+        <img
+          src="https://mc.yandex.ru/watch/101186853"
+          style="position: absolute; left: -9999px"
+          alt=""
+        />
+      </div>
+    </noscript>
+    <!-- /Yandex.Metrika noscript fallback -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
