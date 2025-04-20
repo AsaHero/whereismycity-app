@@ -1,2 +1,11 @@
-export { LoginPage } from "./sections/LoginPage";
-export { RegisterPage } from "./sections/RegisterPage";
+import { LoginPage } from "./sections/LoginPage";
+import { RegisterPage } from "./sections/RegisterPage";
+
+
+export const Login = () => {
+  return <LoginPage />;
+};
+
+export const Register = () => {
+  return <RegisterPage />;
+};

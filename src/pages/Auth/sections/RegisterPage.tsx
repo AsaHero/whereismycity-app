@@ -209,7 +209,7 @@ export const RegisterPage = () => {
     }
   };
 
-  if (isAuthenticated) {
+  if (isAuthenticated()) {
     return navigate("/profile");
   }
 

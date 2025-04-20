@@ -29,13 +29,13 @@ const ContactsPage = lazy(() =>
   }))
 );
 const LoginPage = lazy(() =>
-  import("./pages/Auth/sections/LoginPage").then((module) => ({
-    default: module.LoginPage,
+  import("./pages/Auth/index").then((module) => ({
+    default: module.Login,
   }))
 );
 const RegisterPage = lazy(() =>
-  import("./pages/Auth/sections/RegisterPage").then((module) => ({
-    default: module.RegisterPage,
+  import("./pages/Auth/index").then((module) => ({
+    default: module.Register,
   }))
 );
 const ProfilePage = lazy(() =>

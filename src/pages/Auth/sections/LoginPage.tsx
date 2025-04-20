@@ -84,7 +84,7 @@ export const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  if (isAuthenticated) {
+  if (isAuthenticated()) {
     return navigate("/profile");
   }
 
