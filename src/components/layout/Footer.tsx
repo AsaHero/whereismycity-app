@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Globe2, Twitter, Linkedin, Github, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Footer = () => {
   const footerLinksVariants = {
@@ -60,22 +61,10 @@ export const Footer = () => {
                 href="#"
                 className="text-gray-400 hover:text-yellow-500 transition-colors"
               >
-                <Twitter size={20} />
-              </a>
-              <a
-                href="#"
-                className="text-gray-400 hover:text-yellow-500 transition-colors"
-              >
                 <Linkedin size={20} />
               </a>
               <a
-                href="#"
-                className="text-gray-400 hover:text-yellow-500 transition-colors"
-              >
-                <Github size={20} />
-              </a>
-              <a
-                href="#"
+                href="mailto:asadbahtiyarov2002@gmail.com"
                 className="text-gray-400 hover:text-yellow-500 transition-colors"
               >
                 <Mail size={20} />
@@ -91,23 +80,24 @@ export const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white mb-6">Product</h4>
             <ul className="space-y-4">
-              {[
-                "Features",
-                "Pricing",
-                "Enterprise",
-                "Case Studies",
-                "Roadmap",
-              ].map((link) => (
-                <motion.li key={link} variants={itemVariants}>
-                  <a
-                    href="#"
-                    className="hover:text-yellow-500 transition-colors inline-block relative group"
-                  >
-                    {link}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
-                  </a>
-                </motion.li>
-              ))}
+              <motion.li key={"demo"} variants={itemVariants}>
+                <Link
+                  to="/home#demo"
+                  className="hover:text-yellow-500 transition-colors inline-block relative group"
+                >
+                  {"Demo"}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              </motion.li>
+              <motion.li key={"pricing"} variants={itemVariants}>
+                <Link
+                  to="/pricing"
+                  className="hover:text-yellow-500 transition-colors inline-block relative group"
+                >
+                  {"Pricing"}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              </motion.li>
             </ul>
           </motion.div>
 
@@ -121,23 +111,15 @@ export const Footer = () => {
               Developers
             </h4>
             <ul className="space-y-4">
-              {[
-                "Documentation",
-                "API Reference",
-                "Libraries",
-                "Status",
-                "Community",
-              ].map((link) => (
-                <motion.li key={link} variants={itemVariants}>
-                  <a
-                    href="#"
-                    className="hover:text-yellow-500 transition-colors inline-block relative group"
-                  >
-                    {link}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
-                  </a>
-                </motion.li>
-              ))}
+              <motion.li key={"docs"} variants={itemVariants}>
+                <Link
+                  to="/docs"
+                  className="hover:text-yellow-500 transition-colors inline-block relative group"
+                >
+                  {"Documentation"}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              </motion.li>
             </ul>
           </motion.div>
 
@@ -149,19 +131,24 @@ export const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white mb-6">Company</h4>
             <ul className="space-y-4">
-              {["About", "Blog", "Careers", "Contact", "Partners"].map(
-                (link) => (
-                  <motion.li key={link} variants={itemVariants}>
-                    <a
-                      href="#"
-                      className="hover:text-yellow-500 transition-colors inline-block relative group"
-                    >
-                      {link}
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                  </motion.li>
-                )
-              )}
+              <motion.li key={"about"} variants={itemVariants}>
+                <Link
+                  to="/home"
+                  className="hover:text-yellow-500 transition-colors inline-block relative group"
+                >
+                  {"About"}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              </motion.li>
+              <motion.li key={"contacts"} variants={itemVariants}>
+                <Link
+                  to="/contacts"
+                  className="hover:text-yellow-500 transition-colors inline-block relative group"
+                >
+                  {"Contacts"}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+              </motion.li>
             </ul>
           </motion.div>
         </div>

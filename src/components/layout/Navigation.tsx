@@ -76,7 +76,7 @@ export const Navigation = () => {
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled
+        scrolled || mobileMenuOpen
           ? "bg-white/90 backdrop-blur-md shadow-lg"
           : isHomePage
             ? "bg-transparent"
@@ -95,7 +95,11 @@ export const Navigation = () => {
               <Globe2 className="text-yellow-500 relative z-10" size={32} />
             </div>
             <span
-              className={`text-xl font-bold ${scrolled || !isHomePage ? "text-gray-900" : "text-white"}`}
+              className={`text-xl font-bold ${
+                scrolled || !isHomePage || mobileMenuOpen
+                  ? "text-gray-900"
+                  : "text-white"
+              }`}
             >
               WhereIsMyCity
             </span>
@@ -121,7 +125,9 @@ export const Navigation = () => {
               <a
                 key={item.name}
                 href={item.path}
-                className={`relative group ${scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"} hover:text-yellow-500 transition-colors`}
+                className={`relative group ${
+                  scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"
+                } hover:text-yellow-500 transition-colors`}
               >
                 <span>{item.name}</span>
                 <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-500 group-hover:w-full transition-all duration-300"></span>
@@ -130,11 +136,15 @@ export const Navigation = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className={`relative group ${scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"} hover:text-yellow-500 transition-colors`}
+                className={`relative group ${
+                  scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"
+                } hover:text-yellow-500 transition-colors`}
               >
                 <span>{item.name}</span>
                 <span
-                  className={`absolute left-0 bottom-0 h-0.5 bg-yellow-500 transition-all duration-300 ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
+                  className={`absolute left-0 bottom-0 h-0.5 bg-yellow-500 transition-all duration-300 ${
+                    isActive ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
                 ></span>
               </Link>
             );
@@ -168,7 +178,9 @@ export const Navigation = () => {
                   "English"}
               </span>
               <svg
-                className={`w-4 h-4 ml-1 transition-transform ${isLanguageMenuOpen ? "transform rotate-180" : ""}`}
+                className={`w-4 h-4 ml-1 transition-transform ${
+                  isLanguageMenuOpen ? "transform rotate-180" : ""
+                }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -256,7 +268,9 @@ export const Navigation = () => {
                   {currentUser?.name || t("nav.profile")}
                 </span>
                 <svg
-                  className={`w-4 h-4 transition-transform ${isUserMenuOpen ? "transform rotate-180" : ""}`}
+                  className={`w-4 h-4 transition-transform ${
+                    isUserMenuOpen ? "transform rotate-180" : ""
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -320,7 +334,9 @@ export const Navigation = () => {
             <>
               <Link
                 to="/login"
-                className={`${scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"} hover:text-yellow-500 transition-colors font-medium`}
+                className={`${
+                  scrolled || !isHomePage ? "text-gray-700" : "text-gray-200"
+                } hover:text-yellow-500 transition-colors font-medium`}
               >
                 {t("nav.signin")}
               </Link>
@@ -344,7 +360,9 @@ export const Navigation = () => {
           {mobileMenuOpen ? (
             <X
               className={
-                scrolled || !isHomePage ? "text-gray-900" : "text-white"
+                scrolled || !isHomePage || mobileMenuOpen
+                  ? "text-gray-900"
+                  : "text-white"
               }
               size={24}
             />
@@ -363,10 +381,11 @@ export const Navigation = () => {
           {mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
+              animate={{ opacity: 1, height: "100vh" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 top-0 z-0 bg-gray-900/95 backdrop-blur-md pt-20"
+              className="fixed inset-0 top-0 z-0 bg-white lg:bg-gray-900/95 lg:backdrop-blur-md pt-20"
+              style={{ position: "fixed", top: 0, left: 0, right: 0 }}
             >
               <div className="flex flex-col items-center space-y-6 p-6">
                 {navItems.map((item) => {
@@ -377,7 +396,7 @@ export const Navigation = () => {
                       key={item.name}
                       href={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="text-white text-xl hover:text-yellow-500 transition-colors"
+                      className="text-gray-900 text-xl hover:text-yellow-500 transition-colors"
                     >
                       {item.name}
                     </a>
@@ -385,7 +404,7 @@ export const Navigation = () => {
                     <Link
                       key={item.name}
                       to={item.path}
-                      className="text-white text-xl hover:text-yellow-500 transition-colors"
+                      className="text-gray-900 text-xl hover:text-yellow-500 transition-colors"
                     >
                       {item.name}
                     </Link>
@@ -393,8 +412,8 @@ export const Navigation = () => {
                 })}
 
                 {/* Language selection in mobile menu */}
-                <div className="w-full max-w-xs border-t border-gray-700 pt-6 mt-2">
-                  <p className="text-gray-400 text-sm mb-3 text-center">
+                <div className="w-full max-w-xs border-t border-gray-200 pt-6 mt-2">
+                  <p className="text-gray-600 text-sm mb-3 text-center">
                     {language === "en" ? "Select Language" : "Выберите язык"}
                   </p>
                   <div className="flex justify-center space-x-2">
@@ -405,7 +424,7 @@ export const Navigation = () => {
                         className={`py-2 px-4 rounded ${
                           language === lang.code
                             ? "bg-yellow-500 text-white"
-                            : "border border-gray-600 text-white hover:bg-gray-800"
+                            : "border border-gray-300 text-gray-700 hover:bg-gray-100"
                         } transition-colors flex items-center`}
                       >
                         {lang.name}
@@ -420,7 +439,7 @@ export const Navigation = () => {
                     <>
                       <Link
                         to="/profile"
-                        className="py-2.5 text-center text-white hover:text-yellow-500 transition-colors"
+                        className="py-2.5 text-center text-gray-900 hover:text-yellow-500 transition-colors"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         {t("nav.myProfile")}
@@ -437,7 +456,7 @@ export const Navigation = () => {
                     <>
                       <Link
                         to="/login"
-                        className="py-2.5 text-center text-white hover:text-yellow-500 transition-colors"
+                        className="py-2.5 text-center text-gray-900 hover:text-yellow-500 transition-colors"
                       >
                         {t("nav.signin")}
                       </Link>

@@ -5,6 +5,9 @@ import { Footer } from "./components/layout/Footer";
 import { TranslationProvider } from "./context/TranslationContext";
 import { AuthProvider } from "./context/AuthContext";
 import { SearchProvider } from "./context/SearchContext";
+import { ContactsProvider } from "./context/ContactsContext";
+import ScrollToAnchor from "./components/ScrollToAnchor";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Lazy load page components to improve initial load performance
 const HomePage = lazy(() =>
@@ -55,30 +58,34 @@ function App() {
   return (
     <TranslationProvider>
       <AuthProvider>
-        <SearchProvider>
-          <Router>
-            <div className="min-h-screen flex flex-col bg-white">
-              <Navigation />
+        <ContactsProvider>
+          <SearchProvider>
+            <Router>
+              <div className="min-h-screen flex flex-col bg-white">
+                <Navigation />
 
-              <main className="flex-grow">
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/docs" element={<DocumentationPage />} />
-                    <Route path="/pricing" element={<PricingPage />} />
-                    <Route path="/contacts" element={<ContactsPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-                    <Route path="*" element={<HomePage />} />
-                  </Routes>
-                </Suspense>
-              </main>
+                <main className="flex-grow">
+                  <Suspense fallback={<PageLoader />}>
+                    <ScrollToTop />
+                    <ScrollToAnchor />
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/docs" element={<DocumentationPage />} />
+                      <Route path="/pricing" element={<PricingPage />} />
+                      <Route path="/contacts" element={<ContactsPage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
+                      <Route path="*" element={<HomePage />} />
+                    </Routes>
+                  </Suspense>
+                </main>
 
-              <Footer />
-            </div>
-          </Router>
-        </SearchProvider>
+                <Footer />
+              </div>
+            </Router>
+          </SearchProvider>
+        </ContactsProvider>
       </AuthProvider>
     </TranslationProvider>
   );

@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageSquare, Mail, MapPin, Send, Phone } from "lucide-react";
+import {
+  MessageSquare,
+  Mail,
+  MapPin,
+  Send,
+  Phone,
+  Check,
+  AlertCircle,
+} from "lucide-react";
 import { useTranslation } from "../../../context/TranslationContext";
-
+import { useContacts } from "../../../context/ContactsContext";
 
 export const Contact = () => {
   const { t } = useTranslation();
+  const { loading, error, success, sendMessage, resetStatus } = useContacts();
+
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -13,25 +23,47 @@ export const Contact = () => {
     message: "",
   });
 
+  // Reset form when submission is successful
+  useEffect(() => {
+    if (success) {
+      setFormState({
+        name: "",
+        email: "",
+        company: "",
+        message: "",
+      });
+
+      // Reset success status after 5 seconds
+      const timer = setTimeout(() => {
+        resetStatus();
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success, resetStatus]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
+
+    // Clear error when user starts typing again
+    if (error) {
+      resetStatus();
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real implementation, you would submit the form data to your backend
-    console.log("Form submitted:", formState);
-    // Reset form
-    setFormState({
-      name: "",
-      email: "",
-      company: "",
-      message: "",
-    });
-    // Show success message (not implemented in this example)
+
+    try {
+      await sendMessage(formState);
+      // Success message will be shown via the success state
+    } catch (err) {
+      // Error is handled in the context
+      console.error("Failed to send message:", err);
+    }
   };
 
   return (
@@ -107,7 +139,7 @@ export const Contact = () => {
                       href="mailto:support@whereismycity.com"
                       className="hover:text-yellow-600 transition-colors"
                     >
-                      support@whereismy.city
+                      asadbahtiyarov2002@gmail.com
                     </a>
                   </p>
                 </div>
@@ -139,6 +171,36 @@ export const Contact = () => {
                 {t("contacts.form.title")}
               </h3>
 
+              {/* Success Message */}
+              {success && (
+                <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-lg flex items-start">
+                  <Check className="text-green-500 mr-3 mt-0.5" size={20} />
+                  <div>
+                    <h4 className="font-medium text-green-800">
+                      {t("contacts.form.successTitle") ||
+                        "Message Sent Successfully!"}
+                    </h4>
+                    <p className="text-green-700 text-sm mt-1">
+                      {t("contacts.form.successMessage") ||
+                        "Thank you for your message. We'll get back to you as soon as possible."}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg flex items-start">
+                  <AlertCircle className="text-red-500 mr-3 mt-0.5" size={20} />
+                  <div>
+                    <h4 className="font-medium text-red-800">
+                      {t("contacts.form.errorTitle") || "Something went wrong"}
+                    </h4>
+                    <p className="text-red-700 text-sm mt-1">{error}</p>
+                  </div>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -157,6 +219,7 @@ export const Contact = () => {
                       required
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
                       placeholder="John Doe"
+                      disabled={loading}
                     />
                   </div>
                   <div>
@@ -175,6 +238,7 @@ export const Contact = () => {
                       required
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
                       placeholder="john@example.com"
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -194,6 +258,7 @@ export const Contact = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
                     placeholder="Your Company"
+                    disabled={loading}
                   />
                 </div>
 
@@ -213,15 +278,21 @@ export const Contact = () => {
                     rows={5}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors"
                     placeholder="How can we help you?"
+                    disabled={loading}
                   ></textarea>
                 </div>
 
                 <div>
                   <button
                     type="submit"
-                    className="w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/20 font-medium flex items-center justify-center"
+                    disabled={loading}
+                    className={`w-full px-6 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg hover:from-yellow-600 hover:to-yellow-700 transition-all shadow-lg shadow-yellow-500/20 font-medium flex items-center justify-center ${
+                      loading ? "opacity-70 cursor-not-allowed" : ""
+                    }`}
                   >
-                    {t("contacts.form.submit")}
+                    {loading
+                      ? t("contacts.form.sending") || "Sending..."
+                      : t("contacts.form.submit")}
                     <Send size={16} className="ml-2" />
                   </button>
                 </div>
